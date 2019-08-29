@@ -58,11 +58,15 @@ def test_xls2xml_run():
         assert etree.tostring(output_xml, pretty_print=True) == run_example.read()
 
 def test_xls2xml_sample():
+    # TODO bjuhasz: currently, the XLSReader doesn't take into account the "user_defined_columns"
+    #  in the ./EGA_submission_xlsx.conf.
     xls_reader = XLSReader('data/example_EGA_submission.V5.xlsx', '../EGA_submission_xlsx.conf')
     conf_keys = ['Sample']
     xls_readers = [(key, xls_reader) for key in conf_keys]
     output_xml = utils.multiple_objects_to_xml(xls_readers, '../EGA_submission_xlsx.schema',
                                                '../EGA_sample_xls2xml.xslt')
     with open('data/example_EGA_sample.xml', 'r') as sample_example:
+        # Consume the XML-declaration:
         assert sample_example.readline()
+
         assert etree.tostring(output_xml, pretty_print=True) == sample_example.read()
